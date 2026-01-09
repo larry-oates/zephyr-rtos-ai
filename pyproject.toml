@@ -8,6 +8,9 @@ authors = [
 ]
 requires-python = ">=3.11"
 dependencies = [
+    "httpx>=0.28.1",
+    "pydantic>=2.12.5",
+    "typer>=0.21.1",
 ]
 
 classifiers = [
@@ -24,10 +27,11 @@ classifiers = [
 ]
 
 [project.urls]
-repository = "https://github.com/ksachdeva/ditto-client"
+repository = "https://github.com/ksachdeva/zephyr-rtos-ai"
 
 [project.scripts]
-ditto-client = "ditto_client.__main__:cli_app"
+zephyr-rtos-ai = "zephyr_rtos_ai.__main__:cli_app"
+zra = "zephyr_rtos_ai.__main__:cli_app"
 
 [build-system]
 requires = ["hatchling"]

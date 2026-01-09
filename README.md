@@ -1,2 +1,3 @@
-# zephyr-ai
-Zephyr AI - A collection of tools, prompts, agents &amp; skill to assist firmware development.
+# Zephyr RTOS AI
+
+A collection of tools, prompts, agents and skill to assist with firmware development.

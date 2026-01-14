@@ -1,3 +1,4 @@
+import sys
 from pathlib import Path
 from typing import Annotated, Any, cast
 
@@ -57,6 +58,26 @@ def process(
 
     state.kconfig = KConfigCmdState()
     state.kconfig.doc = kconfig_doc
+
+
+@kconfig_app.command()
+def get(
+    ctx: typer.Context,
+    name: Annotated[str, typer.Argument(help="The CONFIG_ to get")],
+) -> None:
+    """Get's the CONFIG_ symbol entries as json output"""
+
+    state = cast(CmdState, ctx.obj)
+
+    config_items = state.kconfig.doc.get_symbols(name)
+
+    sys.stdout.write(
+        KConfigDoc(
+            gh_base_url=state.kconfig.doc.gh_base_url,
+            zephyr_version=state.kconfig.doc.zephyr_version,
+            symbols=config_items,
+        ).model_dump_json(indent=2)
+    )
 
 
 @kconfig_app.command()

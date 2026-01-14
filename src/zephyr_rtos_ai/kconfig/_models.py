@@ -1,7 +1,7 @@
 import re
 from typing import Any, List, Optional
 
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, Field, field_validator
 
 
 class KConfigDocItem(BaseModel):
@@ -15,7 +15,6 @@ class KConfigDocItem(BaseModel):
     dependencies: str = ""
 
     defaults: List[str] = []
-    alt_defaults: List[str] = []
     selects: List[str] = []
     selected_by: List[str] = []
     implies: List[str] = []
@@ -23,9 +22,10 @@ class KConfigDocItem(BaseModel):
     ranges: List[str] = []
     choices: List[str] = []
 
-    filename: str
-    linenr: int
-    menupath: str
+    alt_defaults: List[str] = Field(default_factory=list, exclude=True)
+    filename: str = Field(..., exclude=True)
+    linenr: int = Field(..., exclude=True)
+    menupath: str = Field(..., exclude=True)
 
     @staticmethod
     def _strip_tags(text: str) -> str:

@@ -6,6 +6,7 @@ from typer import Typer
 
 from zephyr_rtos_ai import __version__
 
+from ._types import CmdState
 from .kconfig._cli import kconfig_app
 
 cli_app = Typer(name=f"Zephyr RTOS Client [{__version__}]")
@@ -34,3 +35,5 @@ def main(
 ) -> None:
     logging.basicConfig(level=logging.WARNING)
     logging.getLogger("zephyr_rtos_ai").setLevel(LOG_LEVELS.get(loglevel, logging.WARNING))
+
+    ctx.ensure_object(CmdState)

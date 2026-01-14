@@ -112,3 +112,11 @@ class KConfigDoc(BaseModel):
     gh_base_url: str
     zephyr_version: str
     symbols: List[KConfigDocItem] = []
+
+    def get_symbols(self, name: str) -> list[KConfigDocItem]:
+        """Return the KConfigDocItems that start with the given name, or None if not found."""
+        results = []
+        for s in self.symbols:
+            if s.name.startswith(name):
+                results.append(s)
+        return results

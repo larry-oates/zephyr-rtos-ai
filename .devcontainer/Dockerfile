@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/devcontainers/python:3.11-bookworm
+FROM mcr.microsoft.com/devcontainers/python:3.11-trixie
 
 ARG USERNAME=vscode
 
@@ -10,4 +10,4 @@ RUN apt-get update \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
 
-ENV SHELL /bin/zsh
+ENV SHELL=/bin/zsh

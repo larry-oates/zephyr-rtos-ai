@@ -7,10 +7,8 @@ from typer import Typer
 from zephyr_rtos_ai import __version__
 
 from ._types import CmdState
-from .kconfig._cli import kconfig_app
 
 cli_app = Typer(name=f"Zephyr RTOS Client [{__version__}]")
-cli_app.add_typer(kconfig_app, name="kconfig", help="Commands related to KConfig graph building and analysis")
 
 LOG_LEVELS = {
     "debug": logging.DEBUG,

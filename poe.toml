@@ -1,0 +1,6 @@
+[tool.poe.tasks]
+fmt = "ruff format"
+
+[tool.poe.tasks.west-setup]
+cwd = "zephyr-ws"
+cmd = "west update"

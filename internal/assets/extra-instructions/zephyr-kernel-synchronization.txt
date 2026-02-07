@@ -1,0 +1,17 @@
+skill_name: zephyr-kernel-synchronization
+description: Enhances the knowledge of an AI agent regarding Zephyr kernel synchronization primitives.
+
+locations:
+  docs_dir: zephyr-ws/deps/zephyr/doc/kernel/services/synchronization
+  header_files:
+    - zephyr-ws/deps/zephyr/include/zephyr/kernel.h
+  sample_dirs:
+    - zephyr-ws/deps/zephyr/samples/kernel/condition_variables
+    - zephyr-ws/deps/zephyr/samples/synchronization
+    - zephyr-ws/deps/zephyr/samples/philosophers
+
+instructions:
+  - Since this skill covers 4 different primitives and require reading corresponding documentation. I suggest to do it step by step.
+  - Must include the comparison between different Semphaores, Mutexes, Condition Variables & Events.
+  - There are few samples (see sample_dirs) that you could also use to learn & extract relevant information about these primitives.
+  - Create a section or table that also provides locations listed above. But use this convention `<zephyr-ws-dir>/zephyr/samples` instead of `<zephyr-ws-dir>/zephyr/samples` as skill will be used in different Zephyr workspaces.

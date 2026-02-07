@@ -1,0 +1,13 @@
+skill_name: zephyr-kernel-isr
+description: A skill that enhances the knowledge of an AI agent of ISR (Interrupt Service Routines) in Zephyr OS.
+
+locations:
+  docs_file: zephyr-ws/deps/zephyr/doc/kernel/services/interrupts.rst
+  header_files:
+    - zephyr-ws/deps/zephyr/include/zephyr/irq.h
+    - zephyr-ws/deps/zephyr/include/zephyr/irq_offload.h
+    - zephyr-ws/deps/zephyr/include/zephyr/irq_nextlevel.h
+    - zephyr-ws/deps/zephyr/include/zephyr/irq_multilevel.h
+
+instructions:
+  -

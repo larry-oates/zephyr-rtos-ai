@@ -1,0 +1,12 @@
+skill_name: zephyr-shell-commands
+description: A skill that enhances the knowledge of an AI agent to use and create shell commands in Zephyr OS.
+
+locations:
+  docs_dir: zephyr-ws/deps/zephyr/doc/services/shell/index.rst
+  c_headers_dir: zephyr-ws/deps/zephyr/include/zephyr/shell
+  important_header_files:
+    - zephyr-ws/deps/zephyr/include/zephyr/shell/shell.h
+
+instructions:
+  - Review the documentation & header files to understand capability & usage of MACROS
+  - Special sections or references for corner/advanced/tricky use-cases of shell commands

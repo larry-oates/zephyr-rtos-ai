@@ -1,0 +1,11 @@
+{
+  "context": {
+    "fileName": ["AGENTS.md"],
+    "fileFiltering": {
+      "respectGitIgnore": false
+    }
+  },
+  "ui": {
+    "theme": "Default Light"
+  }
+}

@@ -5,12 +5,13 @@ This document provides context for AI coding assistants (Open Code, Claude Code,
 ## Repository Structure
 
 ```
-├── .gemini                 # Gemini CLI related stuff (settings.json, commands, agents etc)
+├── .gemini                                 # Gemini CLI related stuff (settings.json, commands, agents etc)
+├── .agents                                 # Contains skills, commands etc for various different Coding agents that respect .agents folder
 ├── .gitattributes
 ├── .gitignore
 ├── .pre-commit-config.yaml
 ├── .python-version
-├── .venv                   # `uv` created `.venv`
+├── .venv                                   # `uv` created `.venv`
 ├── .vscode
 ├── agent-skills                            # The Agent Skills for Zephyr RTOS
 │   ├── zephyr-devicetree

@@ -1,47 +1,119 @@
 ---
 name: zephyr-devicetree
-description: "Enhances the AI agent's capability to work with Zephyr Devicetree, including creating overlays, defining bindings, and using the Devicetree C API macros. Use this skill when you need to: (1) Understand existing .dts/.dtsi files in Zephyr, (2) Create or modify devicetree overlays (.overlay), (3) Write or debug devicetree bindings (.yaml), (4) Use DT_* macros in C/C++ code to access hardware information, (5) Resolve devicetree-related build errors."
+description: "Comprehensive Zephyr Devicetree expertise including overlays, bindings, C API macros, pin control, clocks, interrupts, DMA, and address translation. Use this skill when you need to: (1) Understand or create .dts/.dtsi/.overlay files, (2) Write or debug devicetree bindings (.yaml), (3) Use DT_* macros in C/C++ code, (4) Configure pin control, clocks, interrupts, or DMA in devicetree, (5) Resolve devicetree-related build errors, (6) Understand address translation and memory regions."
 ---
 
 # Zephyr Devicetree Skill
 
-This skill provides expert guidance on using and creating Devicetrees in Zephyr OS. Zephyr's devicetree system is used to describe hardware and is tightly integrated with the driver model and build system.
+Expert guidance on Zephyr's devicetree system for hardware description, driver integration, and build-time code generation.
 
-## Core Workflows
+## Table of Contents
 
-### 1. Understanding Devicetree Structure
-Devicetree is a tree of nodes and properties. Unlike Linux, Zephyr heavily relies on **bindings** to validate nodes and generate C macros.
+1. [Core Concepts](#core-concepts)
+2. [Common Workflows](#common-workflows)
+3. [Hardware Configuration](#hardware-configuration)
+4. [Advanced Topics](#advanced-topics)
+5. [Troubleshooting](#troubleshooting)
 
-- For basic syntax, nodes, and properties, see [syntax.md](references/syntax.md).
-- To understand how nodes match with bindings via the `compatible` property, see [bindings.md](references/bindings.md).
+---
 
-### 2. Modifying Hardware via Overlays
-Overlays are the primary way to customize hardware for an application or a specific board variant without modifying the base Zephyr tree.
+## Core Concepts
 
-- To learn how to override properties, add nodes, or enable/disable devices, see [overlays.md](references/overlays.md).
-- **Pro-tip**: Check `build/zephyr/zephyr.dts` after a build to see the final, merged devicetree.
+### Understanding Devicetree Structure
+Devicetree is a tree of nodes and properties. Zephyr uses **bindings** to validate nodes and generate C macros.
 
-### 3. Writing Bindings
-Bindings define the "schema" for a node. They are written in YAML.
+- **Basic syntax, nodes, properties**: See [syntax.md](references/syntax.md)
+- **Bindings and compatible matching**: See [bindings.md](references/bindings.md)
+- **Address translation (#address-cells, #size-cells, ranges)**: See [address-translation.md](references/address-translation.md)
 
-- For details on binding syntax, property types, and bus-specific matching, see [bindings.md](references/bindings.md).
-- Always include `base.yaml` for standard properties like `reg` and `status`.
+### Key Files in a Build
+After building, check these for debugging:
+- `build/zephyr/zephyr.dts` — Final merged devicetree
+- `build/zephyr/include/generated/devicetree_generated.h` — Generated macros
 
-### 4. Accessing Devicetree from C Code
-Zephyr provides a macro-based API to access devicetree data at compile-time. This is more efficient than runtime parsing.
+---
 
-- For a guide on `DT_*` macros (node identifiers, property access, registers, interrupts), see [macros.md](references/macros.md).
-- **Important**: Node labels (e.g., `DT_NODELABEL(i2c1)`) are the preferred way to get node identifiers.
+## Common Workflows
 
-## Practical Examples
-See [examples.md](references/examples.md) for common scenarios:
-- Configuring a GPIO LED.
-- Adding an I2C sensor.
-- Defining SPI flash partitions.
-- Setting up a PWM buzzer.
+### 1. Modifying Hardware via Overlays
+Overlays customize hardware without modifying base Zephyr files.
+
+- **Override properties, add nodes, enable/disable devices**: See [overlays.md](references/overlays.md)
+
+### 2. Writing Custom Bindings
+Bindings define the schema for devicetree nodes.
+
+- **Basic binding structure**: See [bindings.md](references/bindings.md)
+- **Advanced features (child-binding, enums, specifier-cells)**: See [advanced-bindings.md](references/advanced-bindings.md)
+
+### 3. Accessing Devicetree from C Code
+Zephyr provides compile-time macros to access devicetree data.
+
+- **Basic macros (node IDs, properties, registers)**: See [macros.md](references/macros.md)
+- **Advanced macros (iteration, strings, bus helpers)**: See [advanced-macros.md](references/advanced-macros.md)
+
+---
+
+## Hardware Configuration
+
+### Pin Control (Pinctrl)
+Configure pin multiplexing and electrical properties.
+- See [pinctrl.md](references/pinctrl.md)
+
+### Clocks
+Configure clock providers and consumers.
+- See [clocks.md](references/clocks.md)
+
+### Interrupts
+Configure interrupt controllers and consumers with multi-level support.
+- See [interrupts.md](references/interrupts.md)
+
+### DMA
+Configure DMA controllers and channel assignments.
+- See [dma.md](references/dma.md)
+
+---
+
+## Advanced Topics
+
+### Address Translation
+Understanding `#address-cells`, `#size-cells`, and `ranges` for complex SoC hierarchies.
+- See [address-translation.md](references/address-translation.md)
+
+### Advanced Binding Features
+Child bindings, enums, const, specifier-cells, and binding inheritance.
+- See [advanced-bindings.md](references/advanced-bindings.md)
+
+### Advanced C Macros
+Iteration macros, string helpers, and bus-specific conveniences.
+- See [advanced-macros.md](references/advanced-macros.md)
+
+---
 
 ## Troubleshooting
-- **Missing Binding**: If you get a "choice of binding for ... not found" error, ensure your `compatible` property matches a binding file and that the binding is in a location Zephyr knows about.
-- **Node Disabled**: If `DEVICE_DT_GET()` fails, check if the node has `status = "okay"`.
-- **Undefined Reference**: If you get linker errors like `__device_dts_ord_N`, the driver for that device is likely not enabled in Kconfig.
-- **Final DTS**: Always check `build/zephyr/zephyr.dts` to verify your overlays were applied correctly.
+
+For common errors and debugging techniques:
+- See [debugging.md](references/debugging.md)
+
+### Quick Reference
+
+| Error | Likely Cause | Fix |
+|-------|--------------|-----|
+| "binding for ... not found" | Missing or mismatched `compatible` | Check binding exists and `compatible` matches |
+| `DEVICE_DT_GET()` returns NULL | Node disabled | Add `status = "okay";` |
+| `__device_dts_ord_N` linker error | Driver not enabled | Enable driver in Kconfig |
+| Property type mismatch | Binding expects different type | Check binding's `type:` field |
+
+---
+
+## Practical Examples
+
+See [examples.md](references/examples.md) for complete working examples:
+- GPIO LED (Blinky)
+- I2C Sensor
+- SPI Flash with Partitions
+- PWM Buzzer
+- UART with Pin Control
+- ADC Channel Configuration
+- CAN Bus Setup
+- Timer/Counter Configuration

@@ -1,0 +1,292 @@
+# WiFi Kconfig Options
+
+This reference covers the key Kconfig options for WiFi configuration in Zephyr.
+
+## Core WiFi Configuration
+
+### Driver Selection
+
+```
+# Enable WiFi support
+CONFIG_WIFI=y
+
+# Select your WiFi driver (choose one)
+CONFIG_WIFI_NRF70=y          # Nordic nRF70 series
+CONFIG_WIFI_ESP32=y          # ESP32 integrated WiFi
+CONFIG_WIFI_ESWIFI=y         # Inventek eS-WiFi
+CONFIG_WIFI_WINC1500=y       # Microchip WINC1500
+CONFIG_WIFI_ESP_AT=y         # ESP-AT module
+CONFIG_WIFI_AIROC=y          # Infineon AIROC
+```
+
+### WiFi Usage Mode
+
+```
+# Select primary usage mode (affects buffer allocation)
+CONFIG_WIFI_NM_WPA_SUPPLICANT_STA_MODE_ONLY=y  # Station only
+CONFIG_WIFI_NM_WPA_SUPPLICANT_AP_MODE_ONLY=y   # AP only
+# If neither set, both modes supported
+```
+
+## Management API
+
+```
+# WiFi L2 management API (required for net_mgmt WiFi commands)
+CONFIG_NET_L2_WIFI_MGMT=y
+
+# Extended management features
+CONFIG_WIFI_MGMT_RAW_SCAN_RESULTS=y     # Raw 802.11 scan data
+CONFIG_WIFI_MGMT_RAW_SCAN_RESULT_LENGTH=1024
+CONFIG_WIFI_MGMT_SCAN_SSID_FILT_MAX=4   # Max SSIDs for filtered scan
+CONFIG_WIFI_MGMT_SCAN_CHAN_MAX_MANUAL=8 # Max channels for manual scan
+```
+
+## Power Save Options
+
+```
+# Power save support
+CONFIG_WIFI_MGMT_PS=y
+
+# Target Wake Time (WiFi 6)
+CONFIG_WIFI_MGMT_TWT=y
+CONFIG_WIFI_MGMT_TWT_CHECK_IP=y   # Verify IP before TWT setup
+```
+
+## Access Point Mode
+
+```
+# AP mode support
+CONFIG_WIFI_NM_WPA_SUPPLICANT_AP=y
+
+# Maximum stations in AP mode
+CONFIG_WIFI_MGMT_AP_MAX_NUM_STA=8
+
+# DPP (Device Provisioning Protocol)
+CONFIG_WIFI_NM_WPA_SUPPLICANT_DPP=y
+```
+
+## Network Manager (wpa_supplicant)
+
+```
+# Enable wpa_supplicant network manager
+CONFIG_WIFI_NM_WPA_SUPPLICANT=y
+
+# WPA3 support
+CONFIG_WIFI_NM_WPA_SUPPLICANT_WPA3=y
+
+# Enterprise authentication
+CONFIG_WIFI_NM_WPA_SUPPLICANT_ENTERPRISE=y
+
+# 802.11r Fast Transition
+CONFIG_WIFI_NM_WPA_SUPPLICANT_FAST_TRANSITION=y
+
+# 802.11k Radio Resource Management
+CONFIG_WIFI_NM_WPA_SUPPLICANT_RRM=y
+CONFIG_WIFI_NM_WPA_SUPPLICANT_11K=y
+
+# 802.11v BSS Transition Management
+CONFIG_WIFI_NM_WPA_SUPPLICANT_BTM=y
+
+# Thread stack size for hostap
+CONFIG_WIFI_NM_WPA_SUPPLICANT_THREAD_STACK_SIZE=16384
+```
+
+## Credential Storage
+
+```
+# Persistent credential storage
+CONFIG_WIFI_CREDENTIALS=y
+CONFIG_WIFI_CREDENTIALS_BACKEND_SETTINGS=y
+CONFIG_WIFI_CREDENTIALS_MAX_ENTRIES=10
+
+# Auto-connect to stored credentials
+CONFIG_WIFI_CREDENTIALS_CONNECT_STORED=y
+
+# Required for settings backend
+CONFIG_SETTINGS=y
+CONFIG_NVS=y
+CONFIG_FLASH=y
+CONFIG_FLASH_MAP=y
+```
+
+## Network Stack Integration
+
+```
+# Basic networking
+CONFIG_NETWORKING=y
+CONFIG_NET_L2_ETHERNET=y
+
+# IPv4 support
+CONFIG_NET_IPV4=y
+CONFIG_NET_DHCPV4=y
+
+# IPv6 support
+CONFIG_NET_IPV6=y
+CONFIG_NET_DHCPV6=y
+
+# Static IP configuration
+CONFIG_NET_CONFIG_SETTINGS=y
+CONFIG_NET_CONFIG_MY_IPV4_ADDR="192.168.1.100"
+CONFIG_NET_CONFIG_MY_IPV4_NETMASK="255.255.255.0"
+CONFIG_NET_CONFIG_MY_IPV4_GW="192.168.1.1"
+
+# DNS
+CONFIG_DNS_RESOLVER=y
+```
+
+## Buffer Configuration
+
+```
+# Network buffers (increase for high throughput)
+CONFIG_NET_BUF_RX_COUNT=16
+CONFIG_NET_BUF_TX_COUNT=16
+CONFIG_NET_PKT_RX_COUNT=8
+CONFIG_NET_PKT_TX_COUNT=8
+
+# Maximum packet data size
+CONFIG_NET_BUF_DATA_SIZE=1500
+```
+
+## Shell and Debugging
+
+```
+# WiFi shell commands
+CONFIG_NET_SHELL=y
+CONFIG_WIFI_SHELL=y
+
+# Verbose logging
+CONFIG_WIFI_LOG_LEVEL_DBG=y
+CONFIG_NET_L2_WIFI_MGMT_LOG_LEVEL_DBG=y
+CONFIG_WIFI_NM_LOG_LEVEL_DBG=y
+
+# wpa_supplicant debug
+CONFIG_WIFI_NM_WPA_SUPPLICANT_DEBUG_LEVEL=5  # 0=none to 5=verbose
+```
+
+## Driver-Specific Options
+
+### Nordic nRF70 Series
+
+```
+CONFIG_WIFI_NRF70=y
+CONFIG_WIFI_NRF70_LOG_LEVEL_DBG=y
+
+# Performance tuning
+CONFIG_NRF70_RX_NUM_BUFS=8
+CONFIG_NRF70_MAX_TX_AGGREGATION=4
+```
+
+### ESP32
+
+```
+CONFIG_WIFI_ESP32=y
+CONFIG_ESP32_WIFI_STA_RECONNECT=y
+CONFIG_ESP32_WIFI_STA_AUTO_DHCPV4=y
+```
+
+### ESP-AT Module
+
+```
+CONFIG_WIFI_ESP_AT=y
+CONFIG_WIFI_ESP_AT_MDM_RX_BUF_SIZE=1600
+CONFIG_WIFI_ESP_AT_SCAN_MAC_ADDRESS=y
+```
+
+## Offload vs Native Networking
+
+### Offloaded WiFi (chip handles TCP/IP)
+
+```
+CONFIG_WIFI_OFFLOAD=y
+# No CONFIG_NET_L2_ETHERNET needed
+```
+
+### Native WiFi (Zephyr handles TCP/IP)
+
+```
+CONFIG_WIFI_USE_NATIVE_NETWORKING=y
+CONFIG_NET_L2_ETHERNET=y
+```
+
+## Common Configuration Profiles
+
+### Minimal Station Mode
+
+```
+CONFIG_WIFI=y
+CONFIG_WIFI_NRF70=y
+CONFIG_NET_L2_WIFI_MGMT=y
+CONFIG_NETWORKING=y
+CONFIG_NET_L2_ETHERNET=y
+CONFIG_NET_IPV4=y
+CONFIG_NET_DHCPV4=y
+```
+
+### Full-Featured Station
+
+```
+CONFIG_WIFI=y
+CONFIG_WIFI_NRF70=y
+CONFIG_NET_L2_WIFI_MGMT=y
+CONFIG_WIFI_NM_WPA_SUPPLICANT=y
+CONFIG_WIFI_NM_WPA_SUPPLICANT_WPA3=y
+CONFIG_WIFI_CREDENTIALS=y
+CONFIG_WIFI_CREDENTIALS_BACKEND_SETTINGS=y
+CONFIG_WIFI_MGMT_PS=y
+CONFIG_WIFI_MGMT_TWT=y
+CONFIG_NETWORKING=y
+CONFIG_NET_L2_ETHERNET=y
+CONFIG_NET_IPV4=y
+CONFIG_NET_DHCPV4=y
+CONFIG_SETTINGS=y
+CONFIG_NVS=y
+CONFIG_FLASH=y
+CONFIG_FLASH_MAP=y
+```
+
+### Access Point
+
+```
+CONFIG_WIFI=y
+CONFIG_WIFI_NRF70=y
+CONFIG_NET_L2_WIFI_MGMT=y
+CONFIG_WIFI_NM_WPA_SUPPLICANT=y
+CONFIG_WIFI_NM_WPA_SUPPLICANT_AP=y
+CONFIG_WIFI_MGMT_AP_MAX_NUM_STA=8
+CONFIG_NETWORKING=y
+CONFIG_NET_L2_ETHERNET=y
+CONFIG_NET_IPV4=y
+CONFIG_NET_CONFIG_SETTINGS=y
+CONFIG_NET_CONFIG_MY_IPV4_ADDR="192.168.4.1"
+CONFIG_NET_CONFIG_MY_IPV4_NETMASK="255.255.255.0"
+CONFIG_NET_DHCPV4_SERVER=y
+```
+
+### Station + AP (Concurrent)
+
+```
+CONFIG_WIFI=y
+CONFIG_WIFI_NRF70=y
+CONFIG_NET_L2_WIFI_MGMT=y
+CONFIG_WIFI_NM_WPA_SUPPLICANT=y
+CONFIG_WIFI_NM_WPA_SUPPLICANT_AP=y
+# Both STA and AP interfaces available
+CONFIG_NET_IF_MAX_IPV4_COUNT=2
+CONFIG_NET_IF_MAX_IPV6_COUNT=2
+```
+
+## Kconfig Dependencies
+
+```
+# WiFi Management API dependencies
+NET_L2_WIFI_MGMT → NETWORKING, NET_L2_ETHERNET (for native)
+
+# wpa_supplicant dependencies
+WIFI_NM_WPA_SUPPLICANT → NET_SOCKETS, POSIX_API
+
+# Credential storage dependencies
+WIFI_CREDENTIALS_BACKEND_SETTINGS → SETTINGS, NVS, FLASH, FLASH_MAP
+
+# TWT dependencies
+WIFI_MGMT_TWT → NET_L2_WIFI_MGMT
+```

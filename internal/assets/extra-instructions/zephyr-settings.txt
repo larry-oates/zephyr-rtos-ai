@@ -1,0 +1,14 @@
+zephyr-ws/deps/zephyr/subsys/settings
+
+skill_name: zephyr-settings
+description: A skill that enhances the knowledge of an AI agent to use and create settings in Zephyr OS.
+
+locations:
+  docs_file: zephyr-ws/deps/zephyr/doc/services/storage/settings/index.rst
+  c_headers_dir: zephyr-ws/deps/zephyr/subsys/settings/include/settings
+  sample_dirs:
+    - zephyr-ws/deps/zephyr/samples/subsys/settings
+
+instructions:
+  - Review the documentation & header files to understand api, capability & usage
+  - Create a section or table that also provides locations listed above. Replace `zephyr-ws` with `<zephyr-ws-dir>` as skill will be used in different Zephyr workspaces

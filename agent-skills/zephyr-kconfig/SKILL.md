@@ -1,52 +1,139 @@
 ---
 name: zephyr-kconfig
-description: Expert guidance on Zephyr OS Kconfig system. Use when creating/editing Kconfig files, setting configuration values in prj.conf, or fixing Kconfig dependency errors.
+description: "Comprehensive Zephyr Kconfig expertise for build-time configuration. Use this skill when you need to: (1) Create or edit Kconfig files to define new configuration symbols, (2) Configure applications via prj.conf, boards/*.conf, or overlay configs, (3) Debug 'unmet dependencies', 'symbol not visible', or 'unknown symbol' errors, (4) Use menuconfig/guiconfig interactively, (5) Integrate Kconfig with external modules or out-of-tree drivers, (6) Use Kconfig functions with devicetree (dt_chosen_enabled, etc.), (7) Understand symbol visibility, hidden configs, or select/imply behavior."
 ---
 
-# Zephyr Kconfig Expert
+# Zephyr Kconfig Skill
 
-## When to Use This Skill
+Expert guidance on Zephyr's Kconfig system for build-time configuration, symbol definition, and dependency management.
 
-Use this skill when:
-1.  **Defining Options**: Creating new configuration symbols in `Kconfig` files for drivers, modules, or apps.
-2.  **Configuring Apps**: Setting values in `prj.conf` or `boards/*.conf`.
-3.  **Debugging**: Resolving "unsatisfied dependencies" or "symbol not found" errors during `west build`.
-4.  **Structuring**: Organizing configuration menus and files in a Zephyr project.
+## Table of Contents
 
-## Core Concept: Define vs. Configure
+1. [Core Concepts](#core-concepts)
+2. [Common Workflows](#common-workflows)
+3. [Configuration Files](#configuration-files)
+4. [Advanced Topics](#advanced-topics)
+5. [Troubleshooting](#troubleshooting)
 
-**CRITICAL**: Distinguish between *defining* a symbol and *assigning* a value.
+---
 
-| Action | File | Syntax Example |
-| :--- | :--- | :--- |
-| **Define** (Create Option) | `Kconfig` | `config MY_FEAT`<br>&nbsp;&nbsp;`bool "Enable feature"` |
-| **Configure** (Set Value) | `prj.conf` | `CONFIG_MY_FEAT=y` |
+## Core Concepts
 
-## Workflow
+### Define vs. Configure (CRITICAL)
 
-### 1. Creating/Editing `Kconfig` (Definitions)
-*   For syntax rules (types, menus, logic), read [references/syntax.md](references/syntax.md).
-*   For placement and naming conventions, read [references/best_practices.md](references/best_practices.md).
+| Action | File | Syntax |
+|--------|------|--------|
+| **Define** symbol | `Kconfig` | `config MY_FEAT` (NO prefix) |
+| **Configure** value | `prj.conf` | `CONFIG_MY_FEAT=y` (WITH prefix) |
 
-**Key Rules:**
-*   Always add a `help` string for clarity.
-*   Use `depends on` for hardware/subsystem requirements.
-*   Avoid `select` unless necessary; it bypasses dependency checks.
+### Symbol Types
 
-### 2. Configuring Application (`prj.conf`)
-*   Use `CONFIG_SYMBOL_NAME=value`.
-*   **Booleans**: `y` or `n`. (e.g., `CONFIG_LOG=y`)
-*   **Strings**: Double quotes. (e.g., `CONFIG_BT_DEVICE_NAME="MyDevice"`)
-*   **Integers**: Direct numbers. (e.g., `CONFIG_MAIN_STACK_SIZE=2048`)
+- **bool**: `y` or `n`
+- **int**: Integer value
+- **hex**: Hexadecimal value
+- **string**: Quoted text
 
-### 3. Debugging Dependency Errors
-If `west build` reports a Kconfig error:
-1.  **Check Visibility**: Is the symbol `depends on` condition met?
-2.  **Check Typo**: specific `CONFIG_` prefix usage.
-    *   In `Kconfig`: `config MY_NAME` (NO prefix).
-    *   In `prj.conf`: `CONFIG_MY_NAME=y` (WITH prefix).
+### Key Files After Build
+- `build/zephyr/.config` — Final resolved configuration
+- `build/zephyr/kconfig/Kconfig.modules` — Auto-generated module Kconfigs
+
+---
+
+## Common Workflows
+
+### 1. Defining Symbols in Kconfig
+Create new configuration options for drivers, modules, or apps.
+
+- **Syntax (types, menus, choices, conditionals)**: See [syntax.md](references/syntax.md)
+- **Best practices (naming, placement, dependencies)**: See [best_practices.md](references/best_practices.md)
+
+**Quick Example:**
+```kconfig
+config MY_DRIVER_ENABLE
+    bool "Enable My Driver"
+    depends on I2C
+    help
+      Enable support for My Driver over I2C.
+```
+
+### 2. Configuring Applications
+Set values in `prj.conf` or board-specific overlays.
+
+| Type | Example |
+|------|---------|
+| Boolean | `CONFIG_LOG=y` |
+| Integer | `CONFIG_MAIN_STACK_SIZE=2048` |
+| String | `CONFIG_BT_DEVICE_NAME="MyDevice"` |
+| Hex | `CONFIG_FLASH_BASE_ADDRESS=0x08000000` |
+
+### 3. Using Menuconfig
+Interactive configuration exploration and modification.
+
+- **Launch and navigate menuconfig**: See [menuconfig.md](references/menuconfig.md)
+
+```bash
+west build -t menuconfig
+```
+
+### 4. Writing Module Kconfig
+Integrate external modules with Zephyr's build system.
+
+- **Module integration details**: See [best_practices.md](references/best_practices.md#modules--drivers)
+
+---
+
+## Configuration Files
+
+### Application Level
+| File | Purpose |
+|------|---------|
+| `prj.conf` | Main app configuration |
+| `boards/<board>.conf` | Board-specific overrides |
+| `app.overlay` | Devicetree + Kconfig overlay |
+
+### Module/Driver Level
+| File | Purpose |
+|------|---------|
+| `Kconfig` | Symbol definitions |
+| `zephyr/module.yml` | Module metadata pointing to Kconfig |
+
+---
+
+## Advanced Topics
+
+### Kconfig Functions
+Integrate Kconfig with devicetree at build time.
+
+- **Functions reference (dt_chosen_enabled, dt_nodelabel_enabled, etc.)**: See [functions.md](references/functions.md)
+
+### Practical Examples
+Complete Kconfig patterns for common scenarios.
+
+- **Driver, subsystem, choice examples**: See [examples.md](references/examples.md)
+
+---
+
+## Troubleshooting
+
+For common errors and debugging techniques:
+- See [debugging.md](references/debugging.md)
+
+### Quick Reference
+
+| Error | Likely Cause | Fix |
+|-------|--------------|-----|
+| "X" has unmet dependencies | Missing `depends on` | Enable required dependency first |
+| Symbol not visible | `depends on` condition false | Check what it depends on |
+| Unknown symbol "X" | Typo or Kconfig not sourced | Verify spelling, check module.yml |
+| warning: Y selected by X but not visible | `select` bypassing `depends on` | Use `imply` or fix dependencies |
+
+---
 
 ## References
 
-*   [syntax.md](references/syntax.md) - Detailed syntax (bool, int, menu, choice, if/endif).
-*   [best_practices.md](references/best_practices.md) - File organization, naming, and dependency safety.
+- [syntax.md](references/syntax.md) — Types, menus, choices, conditionals, sourcing
+- [best_practices.md](references/best_practices.md) — Naming, organization, modules, dependency safety
+- [menuconfig.md](references/menuconfig.md) — Interactive configuration workflow
+- [functions.md](references/functions.md) — Kconfig functions for devicetree integration
+- [examples.md](references/examples.md) — Complete Kconfig patterns
+- [debugging.md](references/debugging.md) — Error resolution and debugging techniques

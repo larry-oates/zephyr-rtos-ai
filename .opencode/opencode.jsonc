@@ -1,0 +1,40 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "server": {
+    "port": 4096,
+    "hostname": "0.0.0.0",
+    "mdns": true,
+    "cors": [
+      "http://localhost:5173"
+    ]
+  },
+  "plugin": [
+    "oh-my-opencode@latest"
+  ],
+  "default_agent": "plan",
+  "enabled_providers": [
+    "ollama",
+    "github-copilot",
+    "opencode"
+  ],
+  "provider": {
+    "ollama": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Ollama (local)",
+      "options": {
+        "baseURL": "http://localhost:11434/v1"
+      },
+      "models": {
+        "gpt-oss:120b-cloud": {
+          "name": "gpt-oss:120b-cloud"
+        },
+        "glm-4.7:cloud": {
+          "name": "glm-4.7:cloud"
+        },
+        "kimi-k2.5:cloud": {
+          "name": "kimi-k2.5:cloud"
+        }
+      }
+    }
+  }
+}

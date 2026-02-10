@@ -1,53 +1,69 @@
 ---
 name: zephyr-settings
-description: Comprehensive skill for using and creating settings in Zephyr OS. It covers the settings subsystem, handlers, backends, and storage locations. Use it when you need to store persistent configuration, runtime state, or implement custom settings handlers.
+description: Comprehensive skill for persistent configuration storage in Zephyr OS. Covers Settings subsystem, handlers, backends (NVS, ZMS, FCB, File), and runtime API. Use when you need to store device configuration, runtime state, calibration data, or implement settings handlers. Helps with backend selection (choosing between NVS/ZMS/FCB/File), troubleshooting persistence issues, and integration with other Zephyr subsystems (Bluetooth, Shell, Logging).
 ---
 
 # Zephyr Settings Skill
 
-This skill enhances the AI agent's ability to work with the Zephyr Settings subsystem.
-
 ## Quick Start
 
-1.  **Initialize**: Call `settings_subsys_init()`.
-2.  **Define Handlers**: Use `SETTINGS_STATIC_HANDLER_DEFINE` for static registration or `settings_handler` struct for dynamic.
-3.  **Load**: Call `settings_load()` to populate values from persistent storage.
-4.  **Save**: Use `settings_save_one()` or `settings_save()`.
+1. **Choose Backend**: See [references/backend_comparison.md](references/backend_comparison.md)
+2. **Define Handler**: Use `SETTINGS_STATIC_HANDLER_DEFINE` or `settings_handler` struct
+3. **Initialize**: Call `settings_subsys_init()` → `settings_register()` → `settings_load()`
+4. **Save Changes**: Use `settings_save_one()` or `settings_save()`
 
 ## Core Concepts
 
--   **Keys**: Represented as strings, often hierarchical (e.g., `id/serial`).
--   **Backends**: Persistent storage implementations like NVS (Non-Volatile Storage), ZMS (Zephyr Memory Storage), FCB (Flash Circular Buffer), or File system.
--   **Handlers**: Logic to handle specific subtrees of settings.
-    -   `h_set`: Called when loading or setting a value.
-    -   `h_get`: Called when getting a value.
-    -   `h_export`: Called when saving all settings.
-    -   `h_commit`: Called after all settings in a load operation are processed.
+- **Keys**: Hierarchical strings (e.g., `id/serial`, `wifi/ssid`)
+- **Handlers**: Implement `h_set`, `h_get`, `h_export`, `h_commit` for your subtree
+- **Backends**: Storage implementations (NVS, ZMS, FCB, File) - as of Zephyr 4.1, **NVS and ZMS are recommended** for non-filesystem storage
 
-## Common Workflows
+## Handler Commit Priority
 
-### Implementing a Setting
+When multiple handlers depend on each other during initialization, use commit priority (`cprio`):
+- Lower values = Higher priority (executed first during commit)
+- Default priority: 0
+- Use `settings_register_with_cprio()` for dynamic handlers
+- Use `SETTINGS_STATIC_HANDLER_DEFINE_WITH_CPRIO()` for static handlers
 
-1.  Define a variable to hold the setting.
-2.  Implement `h_set` to update the variable from storage.
-3.  Implement `h_export` to allow the subsystem to save the variable.
-4.  Register the handler.
+**Example**: A network service that other handlers depend on should have higher priority (lower cprio value).
 
-### Loading and Saving
+## Handler Function Quick Reference
 
--   `settings_load()` is typically called once at startup.
--   `settings_save_one()` is used to persist a single value immediately.
--   `settings_save()` iterates through all handlers and calls their `h_export`.
+| Function | Called When | Return Value | Required For |
+|----------|-------------|--------------|--------------|
+| `h_set` | Loading from storage or `runtime_set` | 0 on success | Loading values |
+| `h_get` | Runtime get (`CONFIG_SETTINGS_RUNTIME=y`) | Length on success | Runtime access |
+| `h_export` | Saving all settings | 0 on success | Persistence |
+| `h_commit` | After all settings loaded | 0 on success | Validation/init |
 
-## Reference Material
+## Multiple Storage Sources
 
--   **API Reference**: See [references/api_reference.md](references/api_reference.md) for detailed function signatures and structures.
--   **Examples**: See [references/examples.md](references/examples.md) for common implementation patterns.
--   **Locations**: See [references/locations.md](references/locations.md) for source code and documentation paths in the Zephyr workspace.
+Settings supports loading from multiple sources but saves to a single destination:
+- Multiple **source** backends: Load settings from all registered sources
+- Single **destination** backend: All saves go to one location
+
+**Use case**: Factory defaults in read-only flash + user overrides in NVS.
+
+## References
+
+- **Backend Selection**: [references/backend_comparison.md](references/backend_comparison.md) - Choose the right storage backend
+- **API Reference**: [references/api_reference.md](references/api_reference.md) - Function signatures and structures
+- **Examples**: [references/examples.md](references/examples.md) - Implementation patterns and integrations
+- **Troubleshooting**: [references/troubleshooting.md](references/troubleshooting.md) - Debugging common issues
+- **Locations**: [references/locations.md](references/locations.md) - Source code and documentation paths
 
 ## Kconfig Requirements
 
 Ensure the following are enabled in `prj.conf`:
 - `CONFIG_SETTINGS=y`
-- One or more backends: `CONFIG_SETTINGS_NVS=y`, `CONFIG_SETTINGS_ZMS=y`, `CONFIG_SETTINGS_FILE=y`, or `CONFIG_SETTINGS_FCB=y`.
-- `CONFIG_SETTINGS_RUNTIME=y` if using runtime API.
+- One or more backends: `CONFIG_SETTINGS_NVS=y`, `CONFIG_SETTINGS_ZMS=y`, `CONFIG_SETTINGS_FILE=y`, or `CONFIG_SETTINGS_FCB=y`
+- `CONFIG_SETTINGS_RUNTIME=y` if using runtime API
+- `CONFIG_SETTINGS_DYNAMIC_HANDLERS=y` if registering handlers at runtime
+
+## Related Skills
+
+This skill works well with:
+- **zephyr-kconfig**: Configure `CONFIG_SETTINGS_*` options
+- **zephyr-devicetree**: Define storage partitions and flash regions
+- **zephyr-shell-commands**: Add runtime settings CLI

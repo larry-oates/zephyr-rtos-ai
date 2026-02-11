@@ -4,7 +4,7 @@ Complete reference for GPIO devicetree bindings and properties.
 
 ## GPIO Controller Binding
 
-Base binding for GPIO controllers: `dts/bindings/gpio/gpio-controller.yaml`
+Base binding: `dts/bindings/gpio/gpio-controller.yaml`
 
 ### Required Properties
 
@@ -13,7 +13,15 @@ Base binding for GPIO controllers: `dts/bindings/gpio/gpio-controller.yaml`
 | `gpio-controller` | boolean | Marks node as GPIO controller |
 | `#gpio-cells` | int | Number of cells in GPIO specifier (usually 2) |
 
-### Common Controller Example
+### Optional Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `ngpios` | int | 32 | Number of in-use GPIO slots. Set when only first N GPIOs (0...N-1) are available. |
+| `gpio-reserved-ranges` | array | - | Unusable GPIO offsets as tuples (start, size). Example: `<3 2>, <10 1>` marks offsets 3, 4, 10 unavailable. |
+| `gpio-line-names` | string-array | - | Names for GPIO lines (documentation/debugging). |
+
+### Controller Example
 
 ```dts
 gpio0: gpio@50000000 {
@@ -21,7 +29,19 @@ gpio0: gpio@50000000 {
     reg = <0x50000000 0x200>;
     gpio-controller;
     #gpio-cells = <2>;
+    ngpios = <16>;
+    gpio-line-names = "LED1", "LED2", "BUTTON1", "", "", "", "", "",
+                      "", "", "", "", "", "", "", "";
     status = "okay";
+};
+
+gpio1: gpio@50000300 {
+    compatible = "nordic,nrf-gpio";
+    reg = <0x50000300 0x200>;
+    gpio-controller;
+    #gpio-cells = <2>;
+    ngpios = <16>;
+    gpio-reserved-ranges = <12 4>;  /* Pins 12-15 not usable */
 };
 ```
 
@@ -41,8 +61,6 @@ gpios = <&gpio0 13 GPIO_ACTIVE_LOW>;
 ## gpio-leds Binding
 
 Path: `dts/bindings/led/gpio-leds.yaml`
-
-For LED outputs controlled by GPIO.
 
 ### Properties
 
@@ -88,13 +106,13 @@ static const struct gpio_dt_spec led = GPIO_DT_SPEC_GET(LED0_NODE, gpios);
 
 Path: `dts/bindings/input/gpio-keys.yaml`
 
-For button/switch inputs.
-
 ### Properties
 
 | Property | Type | Required | Description |
 |----------|------|----------|-------------|
 | `compatible` | string | yes | Must be "gpio-keys" |
+| `debounce-interval-ms` | int | no | Debounce interval (default: 30) |
+| `polling-mode` | boolean | no | Poll instead of using interrupts |
 | `gpios` | phandle-array | yes | GPIO specifier |
 | `label` | string | no | Human-readable name |
 | `zephyr,code` | int | no | Input event code |
@@ -109,6 +127,7 @@ For button/switch inputs.
 
     buttons {
         compatible = "gpio-keys";
+        debounce-interval-ms = <50>;
 
         button0: button_0 {
             gpios = <&gpio0 11 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
@@ -124,6 +143,43 @@ For button/switch inputs.
 ```c
 #define SW0_NODE DT_ALIAS(sw0)
 static const struct gpio_dt_spec button = GPIO_DT_SPEC_GET(SW0_NODE, gpios);
+```
+
+## GPIO Hogs
+
+Requires: `CONFIG_GPIO_HOGS=y`
+
+Auto-configure GPIOs at boot without application code.
+
+### Hog Properties
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `gpio-hog` | boolean | Marks node as GPIO hog |
+| `gpios` | array | GPIO specifiers to hog |
+| `input` | boolean | Configure as input |
+| `output-low` | boolean | Configure as output LOW |
+| `output-high` | boolean | Configure as output HIGH |
+| `line-name` | string | Optional descriptive name |
+
+### Example
+
+```dts
+&gpio0 {
+    mux-hog {
+        gpio-hog;
+        gpios = <10 GPIO_ACTIVE_HIGH>, <11 GPIO_ACTIVE_HIGH>;
+        output-high;
+        line-name = "MUX_SEL0", "MUX_SEL1";
+    };
+
+    power-enable {
+        gpio-hog;
+        gpios = <5 GPIO_ACTIVE_HIGH>;
+        output-low;
+        line-name = "POWER_EN";
+    };
+};
 ```
 
 ## GPIO Flags (dt-bindings)
@@ -234,7 +290,6 @@ static const struct gpio_dt_spec led = GPIO_DT_SPEC_GET(DT_ALIAS(led0), gpios);
 ### Overriding Existing Pin
 
 ```dts
-/* Change LED pin on existing board */
 &green_led {
     gpios = <&gpio1 5 GPIO_ACTIVE_LOW>;
 };
@@ -248,31 +303,7 @@ static const struct gpio_dt_spec led = GPIO_DT_SPEC_GET(DT_ALIAS(led0), gpios);
 };
 ```
 
-## GPIO Controller Selection
-
-### Multiple GPIO Ports
-
-```dts
-/* Port 0 */
-gpios = <&gpio0 13 GPIO_ACTIVE_LOW>;
-
-/* Port 1 */
-gpios = <&gpio1 5 GPIO_ACTIVE_HIGH>;
-```
-
-### Getting Port Device in Code
-
-```c
-/* From dt_spec (automatic) */
-const struct device *port = led.port;
-
-/* Directly */
-const struct device *gpio0 = DEVICE_DT_GET(DT_NODELABEL(gpio0));
-```
-
-## Common Patterns
-
-### Multiple GPIOs in One Property
+## Multiple GPIOs in One Property
 
 ```dts
 my_device {
@@ -291,7 +322,7 @@ static const struct gpio_dt_spec ctrl[] = {
 };
 ```
 
-### Optional GPIO
+## Optional GPIO
 
 ```c
 static const struct gpio_dt_spec optional_pin =
@@ -300,4 +331,39 @@ static const struct gpio_dt_spec optional_pin =
 if (optional_pin.port != NULL) {
     /* GPIO is defined */
 }
+```
+
+## GPIO Nexus Binding
+
+Path: `dts/bindings/gpio/gpio-nexus.yaml`
+
+For GPIO mapping/redirection between controllers.
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `gpio-map` | compound | GPIO mapping entries |
+| `gpio-map-mask` | array | Mask for matching specifiers |
+| `gpio-map-pass-thru` | array | Flags to pass through |
+| `#gpio-cells` | int | Cells in GPIO specifiers |
+
+### Example
+
+```dts
+gpio_mux: gpio-mux {
+    compatible = "gpio-nexus";
+    #gpio-cells = <2>;
+
+    gpio-map =
+        <0 0 &gpio0 1 0>,
+        <1 0 &gpio0 2 0>,
+        <2 0 &gpio1 5 0>;
+
+    gpio-map-mask = <0xF 0x0>;
+    gpio-map-pass-thru = <0x0 0x7>;
+};
+
+/* Usage: reference the mux instead of individual GPIO controllers */
+led {
+    gpios = <&gpio_mux 0 GPIO_ACTIVE_HIGH>;  /* Maps to &gpio0 1 */
+};
 ```

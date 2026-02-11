@@ -13,7 +13,7 @@ This document provides context for AI coding assistants (Open Code, Claude Code,
 ├── .python-version
 ├── .venv                                   # `uv` created `.venv`
 ├── .vscode
-├── agent-skills                            # The Agent Skills for Zephyr RTOS
+├── skills                            # The Agent Skills for Zephyr RTOS
 │   ├── zephyr-devicetree
 │   ├── zephyr-kconfig
 │   ├── zephyr-kernel-datapassing

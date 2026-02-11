@@ -267,7 +267,7 @@ When creating a new skill from scratch, always run the `init_skill.py` script. T
 Usage:
 
 ```bash
-uv run <workspace-folder>/internal/zephyr-skill-creator/scripts/init_skill.py zephyr-<skill-name> --path <workspace-folder>/agent-skills/
+uv run <workspace-folder>/internal/zephyr-skill-creator/scripts/init_skill.py zephyr-<skill-name> --path <workspace-folder>/skills/
 ```
 
 The script:
@@ -325,7 +325,7 @@ Write instructions for using the skill and its bundled resources.
 Once development of the skill is complete, validate the skill folder to catch basic issues early:
 
 ```bash
-uv run <workspace-folder>/internal/zephyr-skill-creator/scripts/quick_validate.py <workspace-folder>/agent-skills/zephyr-<skill-name>
+uv run <workspace-folder>/internal/zephyr-skill-creator/scripts/quick_validate.py <workspace-folder>/skills/zephyr-<skill-name>
 ```
 
 The validation script checks YAML frontmatter format, required fields, and naming rules. If validation fails, fix the reported issues and run the command again.

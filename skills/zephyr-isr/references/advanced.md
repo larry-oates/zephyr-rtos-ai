@@ -307,7 +307,7 @@ void my_function(void)
 
 ### Preventing Preemption
 
-IRQ lock inhibits preemption while held:
+IRQ lock inhibits preemption **only while held and thread does not sleep**:
 
 ```c
 void atomic_sequence(void)
@@ -318,7 +318,7 @@ void atomic_sequence(void)
     /* If higher-priority thread B becomes ready,
      * it won't run until after irq_unlock() */
 
-    do_step_1();
+    do_step_1();  /* Must NOT sleep/block! */
     do_step_2();
     do_step_3();
 
@@ -326,6 +326,17 @@ void atomic_sequence(void)
     /* Thread B may now preempt if ready */
 }
 ```
+
+**Critical:** If a thread holding an IRQ lock **sleeps or blocks**, the lock is released when swapped out. The next thread runs with interrupts enabled. When the original thread resumes, its IRQ lock is automatically re-established.
+
+### IRQ Lock vs Scheduler Lock
+
+| Mechanism | Prevents Preemption | Prevents Interrupts | Survives Sleep |
+|-----------|---------------------|---------------------|----------------|
+| `irq_lock()` | Yes (side effect) | Yes | No |
+| `k_sched_lock()` | Yes | No | Yes (maintained) |
+
+Use `k_sched_lock()` when you need to prevent preemption but still want interrupts to fire. Use `irq_lock()` when you need atomic access to data shared with ISRs.
 
 ## RAM-Based Execution
 

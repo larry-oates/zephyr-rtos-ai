@@ -79,20 +79,20 @@ Executable code (Python/Bash/etc.) that can be run directly to perform specific 
 
 **Appropriate for:** Python scripts, shell scripts, or any executable code that performs automation, data processing, or specific operations.
 
-**Note:** Scripts may be executed without loading into context, but can still be read by Claude for patching or environment adjustments.
+**Note:** Scripts may be executed without loading into context, but can still be read by AI Agent for patching or environment adjustments.
 
 ### references/
-Documentation and reference material intended to be loaded into context to inform Claude's process and thinking.
+Documentation and reference material intended to be loaded into context to inform AI Agent's process and thinking.
 
 **Examples from other skills:**
 - Product management: `communication.md`, `context_building.md` - detailed workflow guides
 - BigQuery: API reference documentation and query examples
 - Finance: Schema documentation, company policies
 
-**Appropriate for:** In-depth documentation, API references, database schemas, comprehensive guides, or any detailed information that Claude should reference while working.
+**Appropriate for:** In-depth documentation, API references, database schemas, comprehensive guides, or any detailed information that AI Agent should reference while working.
 
 ### assets/
-Files not intended to be loaded into context, but rather used within the output Claude produces.
+Files not intended to be loaded into context, but rather used within the output AI Agent produces.
 
 **Examples from other skills:**
 - Brand styling: PowerPoint template files (.pptx), logo files
@@ -195,7 +195,7 @@ def title_case_skill_name(skill_name: str) -> str:
     return " ".join(word.capitalize() for word in skill_name.split("-"))
 
 
-def init_skill(skill_name: str, path: str) -> Path | None:
+def init_skill(skill_name: str, path: str | Path) -> Path | None:
     """
     Initialize a new skill directory with template SKILL.md.
 
@@ -275,9 +275,9 @@ def main() -> None:
     if len(sys.argv) < 4 or sys.argv[2] != "--path":
         print("Usage: init_skill.py <skill-name> --path <path>")
         print("\nSkill name requirements:")
-        print("  - Hyphen-case identifier (e.g., 'data-analyzer')")
+        print("  - Kebab-case identifier (e.g., 'my-data-analyzer')")
         print("  - Lowercase letters, digits, and hyphens only")
-        print("  - Max 40 characters")
+        print("  - Max 64 characters")
         print("  - Must match directory name exactly")
         print("\nExamples:")
         print("  init_skill.py my-new-skill --path skills/public")

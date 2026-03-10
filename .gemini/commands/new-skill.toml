@@ -1,9 +1,0 @@
-description = "Create a new skill for Zephyr OS."
-prompt = """
-Let's create a new skill for Zephyr OS.
-
-You already have access to 'zephyr-skill-creator' agent skill that provides expert guidance on creating skills for Zephyr OS.
-
-Read file - internal/assets/extra-instructions/{{args}}.txt for extra instructions on creating the skill.
-
-"""

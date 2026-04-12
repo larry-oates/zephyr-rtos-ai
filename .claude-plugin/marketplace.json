@@ -1,0 +1,19 @@
+{
+  "name": "zephyr-rtos-ai",
+  "owner": {
+    "name": "Kapil Sachdeva"
+  },
+  "metadata": {
+    "description": "Agent harness for firmware development using Zephyr RTOS framework.",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "core-skills",
+      "source": "./",
+      "description": "Agent SKILLs for firmware development using Zephyr RTOS framework.",
+      "category": "development",
+      "tags": ["zephyr-rtos-ai", "firmware", "development", "skills"]
+    }
+  ]
+}

@@ -2,6 +2,10 @@
 
 An Agent Hardness for AI assisted embedded firmware development
 
+![Zephyr RTOS AI Harness](assets/harness.png)
+
+
+
 ## Install
 
 ```bash

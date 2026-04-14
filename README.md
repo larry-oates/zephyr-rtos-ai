@@ -8,7 +8,7 @@ An Agent Hardness for AI assisted embedded firmware development
 npx skills add ksachdeva/zephyr-rtos-ai
 ```
 
-## Agent Skills
+## Available Agent Skills
 
 | Skill | Description |
 |-------|-------------|
@@ -36,6 +36,15 @@ npx skills add ksachdeva/zephyr-rtos-ai
 | `zephyr-uart` | UART serial communication covering polling, interrupt-driven, and async DMA-based APIs. |
 | `zephyr-wifi` | WiFi Station and Access Point modes, scanning, connection management, security types, and power save. |
 
+## Suggested Project Repository Structure
+
+The agent skills work with any Zephyr project layout, but for the best AI-assisted development experience consider using the [zephyr-template](https://github.com/ksachdeva/zephyr-template) as a starting point.
+
+Key benefits:
+
+- Built on modern tooling powered by `uv` and `poe`
+- Includes `poe` tasks that let your AI agent build project(s) without consuming excessive context
+- Ships with an example `AGENTS.md` — use it as inspiration and tailor it to your project's specific needs
 
 ## TODO
 

@@ -212,8 +212,9 @@ Skill creation involves these steps:
 2. Plan reusable skill contents (scripts, references, assets)
 3. Initialize the skill (run init_skill.py)
 4. Edit the skill (implement resources and write SKILL.md)
-5. Package the skill (run package_skill.py)
-6. Iterate based on real usage
+5. Update the repository README
+6. Validate the skill (run quick_validate.py)
+7. Iterate based on real usage
 
 Follow these steps in order, skipping only if there is a clear reason why they are not applicable.
 
@@ -322,7 +323,19 @@ Do not include any other fields in YAML frontmatter.
 
 Write instructions for using the skill and its bundled resources.
 
-### Step 5: Validate the Skill
+### Step 5: Update the Repository README
+
+After editing the skill, add it to the skills table in `README.md` at the repository root.
+
+- Insert a new row in alphabetical order by skill name.
+- Use the skill's frontmatter `description` as the basis for the table entry, condensing it to a single concise sentence if needed.
+
+Example row format:
+```markdown
+| `zephyr-<skill-name>` | Brief description of what the skill covers. |
+```
+
+### Step 6: Validate the Skill
 
 Once development of the skill is complete, validate the skill folder to catch basic issues early:
 
@@ -332,7 +345,7 @@ uv run <workspace-folder>/internal/zephyr-skill-creator/scripts/quick_validate.p
 
 The validation script checks YAML frontmatter format, required fields, and naming rules. If validation fails, fix the reported issues and run the command again.
 
-### Step 6: Iterate
+### Step 7: Iterate
 
 After testing the skill, users may request improvements. Often this happens right after using the skill, with fresh context of how the skill performed.
 

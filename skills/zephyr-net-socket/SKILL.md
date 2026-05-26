@@ -273,3 +273,4 @@ close();    /* Instead of zsock_close() */
 - **zephyr-wifi**: WiFi connectivity before socket operations
 - **zephyr-kconfig**: Configure `CONFIG_NET_*` options
 - **zephyr-shell-commands**: Network shell for debugging (`CONFIG_NET_SHELL=y`)
+- **zephyr-cbor**: Binary serialization for CoAP/UDP payloads

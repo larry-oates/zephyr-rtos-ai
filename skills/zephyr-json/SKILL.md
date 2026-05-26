@@ -179,3 +179,4 @@ static const struct json_obj_descr example_descr[] = {
 
 - **zephyr-net-socket**: HTTP/CoAP communication (JSON payloads)
 - **zephyr-settings**: Persistent storage (JSON config files)
+- **zephyr-cbor**: Alternative binary serialization (smaller, faster than JSON)

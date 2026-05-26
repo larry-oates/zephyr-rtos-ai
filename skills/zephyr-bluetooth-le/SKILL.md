@@ -174,3 +174,4 @@ Call `settings_load()` after `bt_enable()`.
 - **zephyr-devicetree**: Flash partitions for bonding storage
 - **zephyr-shell-commands**: BLE shell for debugging (`CONFIG_BT_SHELL=y`)
 - **zephyr-settings**: Persistent storage backend selection
+- **zephyr-cbor**: CBOR encoding/decoding for SMP over BLE payloads

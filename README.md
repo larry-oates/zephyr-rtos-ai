@@ -17,6 +17,7 @@ npx skills add ksachdeva/zephyr-rtos-ai
 | Skill | Description |
 |-------|-------------|
 | `zephyr-bluetooth-le` | BLE development covering GAP roles, GATT services, advertising, scanning, connections, pairing/bonding, and built-in services. |
+| `zephyr-cbor` | CBOR encoding and decoding using the zcbor library — type-safe code generation from CDDL schemas, CoAP/LwM2M/SUIT/SMP payload handling, and efficient binary serialization for IoT protocols. |
 | `zephyr-device-drivers` | Device driver model, initialization levels, power management, bus-specific patterns, and sensor drivers. |
 | `zephyr-devicetree` | Devicetree overlays, bindings, `DT_*` C macros, pin control, clocks, interrupts, DMA, and address translation. |
 | `zephyr-fs` | File system support including VFS API, LittleFS, FAT, ext2, and FCB for persistent file-based storage. |
